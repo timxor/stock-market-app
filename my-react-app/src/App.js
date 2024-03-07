@@ -15,7 +15,7 @@ function App() {
     <>
       <Navbar bg="dark" variant="dark" className="header">
         <Container>
-          <Navbar.Brand href="#home">Library - Firebase CRUD</Navbar.Brand>
+          <Navbar.Brand href="#home">Stock App</Navbar.Brand>
         </Container>
       </Navbar>
 
