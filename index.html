@@ -11,19 +11,16 @@
 						stroke-opacity: 0;
 						z-index: 1;
 					}
-					.tooltip{
+					.tooltip {
 						position: absolute;
-						display: none;
-						width: auto;
-						height: auto;
-						background: none repeat scroll 0 0 rgb(233, 67, 67);
-						border: 0 none;
+			                        padding: 5px;
+						background-color: rgb(11, 40, 65);
+						color: white;
+						border: 0px solid white;
 						border-radius: 0px;
-						color: rgb(149, 6, 6);
-						font: 14px sans-serif;
+						display: none;
 						opacity: .75;
-						padding: 5px;
-						text-align: center;
+						font-size: 14px;
 					}
 
 					.tooltip-line{
@@ -53,6 +50,18 @@
 			  .attr("height", height + margin.top + margin.bottom)
 			  .append("g")
 			  .attr("transform", `translate(${margin.left},${margin.top})`);
+			
+			// create tooltip div
+
+                        const tooltip = d3.select("body")
+                            .append("div")
+                            .attr("class", "tooltip");
+
+                        // Create a second tooltip div for raw date
+
+                        const tooltipRawDate = d3.select("body")
+                            .append("div")
+                            .attr("class", "tooltip");	
 
 			// Create our gradient  
 
@@ -177,12 +186,15 @@
 					const [xCoord] = d3.pointer(event, this);
 					const bisectDate = d3.bisector(d => d.Date).left;
 					const x0 = x.invert(xCoord);
-					const i = bisectDate(data, x0, 1);
+					var i = bisectDate(data, x0, 1);
+					if (i == 1) {
+                                            i = i + 1;
+                                        }
 					const d0 = data[i - 1];
-					const d1 = data[i];
+					const d1 = data[i - 2];
 					const d = x0 - d0.Date > d1.Date - x0 ? d1 : d0;
 					const xPos = x(d.Date);
-					const yPos = y(d.Close);
+					const yPos = y(d.High);
 
 				// UpDate the circle position
 
@@ -206,7 +218,7 @@
 				.style("display", "block")
 				.style("left", `${width + 90}px`)
 				.style("top", `${yPos + 68}px`)
-				.html(`$${d.Close !== undefined ? d.Close.toFixed(2) : 'N/A'}`);
+				.html(`$${d.High !== undefined ? d.High.toFixed(2) : 'N/A'}`);
 
 
 				tooltipRawDate
