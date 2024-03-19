@@ -1,5 +1,5 @@
 import { db } from '../components/firebase-config'
-import { collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc, setDoc } from 'firebase/firestore'
 const stockCollectionRef = collection(db, 'stocks');
 
 const apiKey = 'SF2U3E47WRBLTDU8';
@@ -23,9 +23,32 @@ class StockDataService{
         }
       };
       
-    addStock = (newStock) => {
-        return addDoc(stockCollectionRef, newStock);
-    }
+      addStockToUser = async (userId, symbol, company, date, high) => {
+        try {
+            // Reference to the stocks subcollection for the current user
+            const stocksCollectionRef = collection(db, 'users', userId, 'stocks');
+
+            // Check if the stock subcollection exists for the user
+            const snapshot = await getDocs(stockCollectionRef);
+            if (snapshot.empty) {
+                // Create the stock subcollection if it doesn't exist
+                await setDoc(doc(db, 'users', userId), { stocks: true }, { merge: true });
+            }
+
+            // Add the stock document to the user's stock subcollection
+            const newStockRef = await addDoc(stocksCollectionRef, {
+                symbol,
+                company,
+                date,
+                high
+            });
+
+            console.log('New stock added with ID:', newStockRef.id);
+        } catch (error) {
+            console.error('Error adding stock:', error);
+            throw error;
+        }
+    };
 
     updateStock = (id, newStock) => {
         const stockDoc = doc(db, 'stock');
