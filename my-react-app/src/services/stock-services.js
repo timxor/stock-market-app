@@ -1,5 +1,5 @@
 import { db } from '../components/firebase-config'
-import { collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc, setDoc } from 'firebase/firestore'
+import { collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc, setDoc, query, where } from 'firebase/firestore'
 const stockCollectionRef = collection(db, 'stocks');
 
 const apiKey = 'SF2U3E47WRBLTDU8';
@@ -60,8 +60,19 @@ class StockDataService{
         return deleteDoc(stockDoc);
     };
 
-    getAllStocks = () => {
-        return getDocs(stockCollectionRef);
+    async getUserStocks(userId) {
+      try {
+        // Reference the collection where user's stocks are stored
+        const userStocksRef = collection(db, 'users', userId, 'stocks');
+  
+        // Get all documents from the user's "stocks" subcollection
+        const querySnapshot = await getDocs(userStocksRef);
+        console.log('Snapshot:', querySnapshot);
+        return querySnapshot.docs.map(doc => doc.data());
+      } catch (error) {
+        console.error('Error fetching user stocks:', error);
+        throw error; // Rethrow the error for handling in the calling code
+      }
     }
 
     getStock = (id) => {

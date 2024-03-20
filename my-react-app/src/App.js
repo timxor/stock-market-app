@@ -1,41 +1,32 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import { Routes, Route, useLocation } from "react-router-dom";
-import { AuthProvider } from './components/AuthContext'; // Import the AuthProvider
-import SignOutButton from "./components/SignOut"; // Import the SignOutButton
-import "./App.css";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
-import AddStock from "./components/AddStock";
+import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from './components/AuthContext';
+import SignOutButton from './components/SignOut';
+import HomePage from './components/HomePage';
+import Login from './components/Login';
+import SignUp from './components/SignUp';
+import AddStock from './components/AddStock';
+import Dashboard from './components/Dashboard'; // Import the Dashboard component
+import Navbar from './components/Navbar';
+import './App.css';
 
 function App() {
-  const location = useLocation();
-
-  // Function to check if the current route is login or sign-up
-  const isLoginPage = location.pathname === "/login";
-  const isSignUpPage = location.pathname === "/signup";
-
   return (
     <AuthProvider>
       <div className="app-container">
-        {/* Conditionally render the signout button */}
-        {!isLoginPage && !isSignUpPage && (
-          <header>
-            <SignOutButton /> {/* Include the SignOutButton component in the header */}
-          </header>
-        )}
-        <Container>
-          <Row>
-            <Col>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/addstock" element={<AddStock />} />
-                {/* Add more routes as needed */}
-              </Routes>
-            </Col>
-          </Row>
-        </Container>
+        <header> 
+          <SignOutButton />
+          <Navbar />
+        </header>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/addstock" element={<AddStock />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Add a Route for handling 404 errors or unknown routes */}
+          {/* <Route path="*" element={<NotFoundPage />} /> */}
+        </Routes>
       </div>
     </AuthProvider>
   );

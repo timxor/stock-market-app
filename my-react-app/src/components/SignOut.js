@@ -9,7 +9,7 @@ const SignOutButton = () => {
   const handleSignOut = async () => {
     try {
       await auth.signOut();
-      history('/login'); // Redirect to login page after signout
+      history('/'); // Redirect to login page after signout
     } catch (error) {
       console.error('Error signing out:', error);
     }
