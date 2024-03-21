@@ -1,50 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import StockDataService from '../services/stock-services';
+// Dashboard.js
+import React, { useEffect, useState } from 'react';
+import { getDocs, collection, query, where } from 'firebase/firestore';
+import { db, auth } from './firebase-config';
 
 const Dashboard = () => {
-  const { currentUser } = useAuth();
   const [userStocks, setUserStocks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserStocks = async () => {
       try {
-        // Assuming user's stocks are stored under their UID in Firestore
-        const querySnapshot = await StockDataService.getUserStocks(currentUser.uid);
-        const stocks = [];
-        querySnapshot.forEach((doc) => {
-          // Assuming each document contains stock information
-          stocks.push({ id: doc.id, ...doc.data() });
-        });
-        setUserStocks(stocks);
-        console.log('Snapshot:', querySnapshot);
+        const userId = auth.currentUser.uid;
 
+        const userStocksQuery = query(collection(db, `users/${userId}/stocks`));
+
+        const userStocksSnapshot = await getDocs(userStocksQuery);
+
+        const stocksData = userStocksSnapshot.docs.map(doc => ({
+          id: doc.id,
+          data: doc.data()
+        }));
+
+        setUserStocks(stocksData);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching user stocks:', error);
+        setLoading(false);
       }
     };
 
-    if (currentUser) {
-      fetchUserStocks();
-    }
-  }, [currentUser]);
+    fetchUserStocks();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
-      <h2>Dashboard</h2>
-      <div>
-        <h3>Saved Stocks:</h3>
-        <ul>
-          {userStocks.map((stock) => (
-            <li key={stock.id}>
-              <p>Company: {stock.company}</p>
-              <p>Date: {stock.date}</p>
-              <p>High: {stock.high}</p>
-              {/* Display other stock information as needed */}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <h1>Dashboard</h1>
+      <ul>
+        {userStocks.map(stock => (
+          <li key={stock.id}>
+            <h3>{stock.data.company}</h3>
+            <p>Date: {stock.data.date}</p>
+            <p>High: {stock.data.high}</p>
+            {/* Add more fields as needed */}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
