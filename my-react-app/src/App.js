@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from './components/AuthContext';
@@ -18,7 +19,9 @@ function App() {
           <div className="container d-flex justify-content-between align-items-center">
             <h1 className="logo text-white">Stock App</h1>
             <Navbar />
-            <SignOutButton />
+            <div>
+              <SignOutButton />
+            </div>
           </div>
         </header>
         <main className="container py-4">

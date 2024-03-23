@@ -4,21 +4,23 @@ import { auth } from './firebase-config';
 import { useNavigate } from 'react-router-dom';
 
 const SignOutButton = () => {
-  const history = useNavigate();
+  const navigate = useNavigate(); // useNavigate hook for redirection
 
   const handleSignOut = async () => {
     try {
       await auth.signOut();
-      history('/'); // Redirect to login page after signout
+      navigate('/'); // Redirect to login page after signout
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
 
   return (
-    <Button variant="outline-danger" onClick={handleSignOut}>
-      Sign Out
-    </Button>
+    <div className="signout-button">
+      <Button variant="link" onClick={handleSignOut}>
+        Sign Out
+      </Button>
+    </div>
   );
 };
 
