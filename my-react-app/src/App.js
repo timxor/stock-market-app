@@ -6,7 +6,7 @@ import HomePage from './components/HomePage';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import AddStock from './components/AddStock';
-import Dashboard from './components/Dashboard'; // Import the Dashboard component
+import Dashboard from './components/Dashboard';
 import Navbar from './components/Navbar';
 import './App.css';
 
@@ -14,19 +14,27 @@ function App() {
   return (
     <AuthProvider>
       <div className="app-container">
-        <header> 
-          <SignOutButton />
-          <Navbar />
+        <header className="header">
+          <div className="container d-flex justify-content-between align-items-center">
+            <h1 className="logo text-white">Stock App</h1>
+            <Navbar />
+            <SignOutButton />
+          </div>
         </header>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/addstock" element={<AddStock />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          {/* Add a Route for handling 404 errors or unknown routes */}
-          {/* <Route path="*" element={<NotFoundPage />} /> */}
-        </Routes>
+        <main className="container py-4">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/addstock" element={<AddStock />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </main>
+        <footer className="footer bg-dark text-white text-center py-3">
+          <div className="container">
+            &copy; 2024 Stock App
+          </div>
+        </footer>
       </div>
     </AuthProvider>
   );
