@@ -1,6 +1,5 @@
-// Dashboard.js
 import React, { useEffect, useState } from 'react';
-import { getDocs, collection, query, where } from 'firebase/firestore';
+import { getDocs, collection, query } from 'firebase/firestore';
 import { db, auth } from './firebase-config';
 
 const Dashboard = () => {
@@ -13,7 +12,6 @@ const Dashboard = () => {
         const userId = auth.currentUser.uid;
 
         const userStocksQuery = query(collection(db, `users/${userId}/stocks`));
-
         const userStocksSnapshot = await getDocs(userStocksQuery);
 
         const stocksData = userStocksSnapshot.docs.map(doc => ({
@@ -43,9 +41,14 @@ const Dashboard = () => {
         {userStocks.map(stock => (
           <li key={stock.id}>
             <h3>{stock.data.company}</h3>
-            <p>Date: {stock.data.date}</p>
-            <p>High: {stock.data.high}</p>
-            {/* Add more fields as needed */}
+            <ul>
+              {stock.data.dates.map((date, index) => (
+                <li key={date}>
+                  <p>Date: {date}</p>
+                  <p>High: {stock.data.highs[index]}</p>
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>

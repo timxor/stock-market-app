@@ -21,18 +21,23 @@ const AddStock = () => {
 
   const saveStockToUser = async () => {
     try {
+      if (!stockData) {
+        console.error("Stock data is not available.");
+        return;
+      }
+
       const metaData = stockData['Meta Data'];
       const timeSeries = stockData['Time Series (Daily)'];
       const company = metaData['2. Symbol'];
-      const date = metaData['3. Last Refreshed'];
-      const high = timeSeries[date]['2. high'];
+      const dates = Object.keys(timeSeries).slice(0, 7); // Get the 7 most recent dates
+      const highs = dates.map(date => timeSeries[date]['2. high']); // Get highs for the 7 dates
 
       // Add stock to current user
       if (auth.user) {
-        await StockDataService.addStockToUser(auth.user.uid, symbol, company, date, high);
+        await StockDataService.addStockToUser(auth.user.uid, company, dates, highs);
         console.log("Stock added to user successfully!");
         // Redirect to a different page after adding stock
-        //history.push('/dashboard');
+        // history.push('/dashboard');
       } else {
         console.error("User not authenticated.");
       }
@@ -67,6 +72,5 @@ const AddStock = () => {
     </div>
   );
 };
-
 
 export default AddStock;
