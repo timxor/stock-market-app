@@ -6,14 +6,13 @@ import { db, auth } from './firebase-config';
 const Dashboard = () => {
   const [userStocks, setUserStocks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('week'); // Default filter is week
+  const [filter, setFilter] = useState('stocksWeek'); // Default filter is week
 
   useEffect(() => {
-    const fetchUserStocks = async () => {
+    const fetchUserStocks = async (filter) => {
       try {
         const userId = auth.currentUser.uid;
-
-        const userStocksQuery = query(collection(db, `users/${userId}/stocksWeek`));
+        const userStocksQuery = query(collection(db, `users/${userId}/${filter}`));
         const userStocksSnapshot = await getDocs(userStocksQuery);
 
         const stocksData = userStocksSnapshot.docs.map(doc => ({
@@ -29,7 +28,7 @@ const Dashboard = () => {
       }
     };
 
-    fetchUserStocks();
+    fetchUserStocks(filter);
   }, []);
 
   const filterStocks = (period) => {
@@ -46,9 +45,9 @@ const Dashboard = () => {
     <div>
       <h1>Dashboard</h1>
       <div>
-        <button onClick={() => filterStocks('week')}>Week</button>
-        <button onClick={() => filterStocks('month')}>Month</button>
-        <button onClick={() => filterStocks('year')}>Year</button>
+        <button onClick={() => filterStocks('stocksWeek')}>Week</button>
+        <button onClick={() => filterStocks('stocksMonth')}>Month</button>
+        <button onClick={() => filterStocks('stocksYear')}>Year</button>
       </div>
       <ul>
         {userStocks.map(stock => (
