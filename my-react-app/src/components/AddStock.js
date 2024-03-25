@@ -19,7 +19,7 @@ const AddStock = () => {
     }
   };
 
-  const saveStockToUser = async () => {
+  const saveStockToUserWeek = async () => {
     try {
       if (!stockData) {
         console.error("Stock data is not available.");
@@ -64,7 +64,7 @@ const AddStock = () => {
         <div>
           <h2>Stock Data:</h2>
           <pre>{JSON.stringify(stockData, null, 2)}</pre>
-          <button onClick={saveStockToUser}>Save Stock to User</button>
+          <button onClick={saveStockToUserWeek}>Save Stock to User</button>
         </div>
       )}
 

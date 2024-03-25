@@ -25,37 +25,39 @@ class StockDataService{
 
   addStockToUser = async (userId, company, dates, highs) => {
     try {
-      // Reference to the stocks subcollection for the current user
-      const stocksCollectionRef = collection(db, 'users', userId, 'stocks');
-
-      // Check if the stock subcollection exists for the user
-      const snapshot = await getDocs(stocksCollectionRef);
+      // Reference to the stocksWeek subcollection for the current user
+      const stocksWeekCollectionRef = collection(db, 'users', userId, 'stocksWeek');
+  
+      // Check if the stocksWeek subcollection exists for the user
+      const snapshot = await getDocs(stocksWeekCollectionRef);
       if (snapshot.empty) {
-        // Create the stock subcollection if it doesn't exist
-        await setDoc(doc(db, 'users', userId), { stocks: true }, { merge: true });
+        // Create the stocksWeek subcollection if it doesn't exist
+        await setDoc(doc(db, 'users', userId), { stocksWeek: true }, { merge: true });
       }
-
-      // Add the stock document to the user's stock subcollection
-      const newStockRef = await addDoc(stocksCollectionRef, {
+  
+      // Add the stock document to the user's stocksWeek subcollection
+      const newStockRef = await addDoc(stocksWeekCollectionRef, {
         company,
         dates,
         highs
       });
-
+  
       console.log('New stock added with ID:', newStockRef.id);
     } catch (error) {
       console.error('Error adding stock:', error);
       throw error;
     }
   };
+  
+  
 
     updateStock = (id, newStock) => {
-        const stockDoc = doc(db, 'stock');
+        const stockDoc = doc(db, 'stockWeek');
         return updateDoc(stockDoc, newStock);
     };
 
     deleteStock = (id, newStock) => {
-        const stockDoc = doc(db, 'stock');
+        const stockDoc = doc(db, 'stockWeek');
         return deleteDoc(stockDoc);
     };
 
