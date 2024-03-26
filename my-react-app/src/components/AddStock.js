@@ -8,18 +8,16 @@ const AddStock = () => {
   const auth = useAuth(); // Access current user
   const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleGetStockData = async (interval) => {
     try {
-      const data = await StockDataService.getStockData(symbol);
+      const data = await StockDataService.getStockData(symbol, interval);
       setStockData(data);
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const saveStockToUserWeek = async () => {
+  const handleSaveStock = async () => {
     try {
       if (!stockData) {
         console.error("Stock data is not available.");
@@ -32,7 +30,6 @@ const AddStock = () => {
       const dates = Object.keys(timeSeries).slice(0, 7); // Get the 7 most recent dates
       const highs = dates.map(date => timeSeries[date]['2. high']); // Get highs for the 7 dates
 
-      // Add stock to current user
       if (auth.user) {
         await StockDataService.addStockToUser(auth.user.uid, company, dates, highs);
         console.log("Stock added to user successfully!");
@@ -48,23 +45,26 @@ const AddStock = () => {
 
   return (
     <div className="add-stock-container">
-      <form onSubmit={handleSubmit}>
-        <label>
-          Enter Stock Symbol:
-          <input
-            type="text"
-            value={symbol}
-            onChange={(e) => setSymbol(e.target.value)}
-          />
-        </label>
-        <button type="submit">Get Stock Data</button>
-      </form>
+      <label>
+        Enter Stock Symbol:
+        <input
+          type="text"
+          value={symbol}
+          onChange={(e) => setSymbol(e.target.value)}
+        />
+      </label>
+      <div>
+        <button onClick={() => handleGetStockData('day')}>Day</button>
+        <button onClick={() => handleGetStockData('week')}>Week</button>
+        <button onClick={() => handleGetStockData('month')}>Month</button>
+        <button onClick={() => handleGetStockData('year')}>Year</button>
+        <button onClick={handleSaveStock}>Save Stock</button>
+      </div>
 
       {stockData && (
         <div>
           <h2>Stock Data:</h2>
           <pre>{JSON.stringify(stockData, null, 2)}</pre>
-          <button onClick={saveStockToUserWeek}>Save Stock to User</button>
         </div>
       )}
 

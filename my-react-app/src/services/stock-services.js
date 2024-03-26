@@ -2,7 +2,7 @@ import { db } from '../components/firebase-config'
 import { collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc, setDoc, query, where } from 'firebase/firestore'
 const stockCollectionRef = collection(db, 'stocks');
 
-const apiKey = 'SF2U3E47WRBLTDU8';
+const apiKey = 'ML4ZZM2TS1V1DNRN';
 const symbol = 'MSFT'; // Replace with the desired stock symbol
 
 // replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
@@ -11,8 +11,22 @@ var response = "hi";
 // Simulate API call delay (remove this in a real application)
 
 class StockDataService{
-  getStockData = async (symbol) => {
-    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${symbol}&apikey=${apiKey}`;
+  getStockData = async (symbol, interval) => {
+    if (interval === "day"){
+      interval = "INTRADAY";
+    }else if (interval === "week"){
+      interval = "DAILY";
+    }else if (interval === "month"){
+      interval = "WEEKLY";
+    }else{
+      interval = "MONTHLY"
+    }
+    if(interval === "INTRADAY"){
+      url = `https://www.alphavantage.co/query?function=TIME_SERIES_${interval}&symbol=${symbol}&interval=5min&apikey=${apiKey}`;
+    }else{
+      url = `https://www.alphavantage.co/query?function=TIME_SERIES_${interval}&symbol=${symbol}&apikey=${apiKey}`;
+    }
+    
     try {
       const response = await fetch(url);
       const data = await response.json();
