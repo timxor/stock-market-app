@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext';
 const AddStock = () => {
   const [symbol, setSymbol] = useState('');
   const [stockData, setStockData] = useState(null);
+  const [interval, setInterval] = useState(null); // State to store interval
   const auth = useAuth(); // Access current user
   const [error, setError] = useState(null);
 
@@ -12,6 +13,7 @@ const AddStock = () => {
     try {
       const data = await StockDataService.getStockData(symbol, interval);
       setStockData(data);
+      setInterval(interval); // Set the interval in state
     } catch (error) {
       setError(error.message);
     }
@@ -19,19 +21,30 @@ const AddStock = () => {
 
   const handleSaveStock = async () => {
     try {
-      if (!stockData) {
-        console.error("Stock data is not available.");
+      if (!stockData || !interval) {
+        console.error("Stock data or interval is not available.");
         return;
       }
-
+      //5min Daily "Weekly Time Series" "Monthly Time Series""
+      let timeSeriesKey = 'poo';
+      if (interval === 'day') {
+        timeSeriesKey = 'Time Series (5min)';
+      } else if (interval === 'week') {
+        timeSeriesKey = 'Time Series (Daily)';
+      } else if (interval === 'month') {
+        timeSeriesKey = 'Weekly Time Series';
+      } else if (interval === 'year') {
+        timeSeriesKey = 'Monthly Time Series';
+      }
+      
       const metaData = stockData['Meta Data'];
-      const timeSeries = stockData['Time Series (Daily)'];
+      const timeSeries = stockData[timeSeriesKey];
       const company = metaData['2. Symbol'];
-      const dates = Object.keys(timeSeries).slice(0, 7); // Get the 7 most recent dates
-      const highs = dates.map(date => timeSeries[date]['2. high']); // Get highs for the 7 dates
+      const dates = Object.keys(timeSeries);
+      const highs = Object.values(timeSeries).map(data => data['2. high']);
 
       if (auth.user) {
-        await StockDataService.addStockToUser(auth.user.uid, company, dates, highs);
+        await StockDataService.addStockToUser(auth.user.uid, company, dates, highs, interval);
         console.log("Stock added to user successfully!");
         // Redirect to a different page after adding stock
         // history.push('/dashboard');
@@ -58,7 +71,7 @@ const AddStock = () => {
         <button onClick={() => handleGetStockData('week')}>Week</button>
         <button onClick={() => handleGetStockData('month')}>Month</button>
         <button onClick={() => handleGetStockData('year')}>Year</button>
-        <button onClick={handleSaveStock}>Save Stock</button>
+        <button onClick={handleSaveStock} disabled={!interval}>Save Stock</button>
       </div>
 
       {stockData && (

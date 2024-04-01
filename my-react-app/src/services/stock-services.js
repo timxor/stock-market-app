@@ -1,32 +1,27 @@
-import { db } from '../components/firebase-config'
-import { collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc, setDoc, query, where } from 'firebase/firestore'
-const stockCollectionRef = collection(db, 'stocks');
+import { db } from '../components/firebase-config';
+import { collection, getDocs, addDoc, doc, setDoc } from 'firebase/firestore';
 
 const apiKey = 'ML4ZZM2TS1V1DNRN';
-const symbol = 'MSFT'; // Replace with the desired stock symbol
 
-// replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-var url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol='+ symbol +'&apikey=' + apiKey;
-var response = "hi";
-// Simulate API call delay (remove this in a real application)
-
-class StockDataService{
-  getStockData = async (symbol, interval) => {
-    if (interval === "day"){
+class StockDataService {
+  async getStockData(symbol, interval) {
+    let url;
+    if (interval === "day") {
       interval = "INTRADAY";
-    }else if (interval === "week"){
+    } else if (interval === "week") {
       interval = "DAILY";
-    }else if (interval === "month"){
+    } else if (interval === "month") {
       interval = "WEEKLY";
-    }else{
-      interval = "MONTHLY"
+    } else {
+      interval = "MONTHLY";
     }
-    if(interval === "INTRADAY"){
+
+    if (interval === "INTRADAY") {
       url = `https://www.alphavantage.co/query?function=TIME_SERIES_${interval}&symbol=${symbol}&interval=5min&apikey=${apiKey}`;
-    }else{
+    } else {
       url = `https://www.alphavantage.co/query?function=TIME_SERIES_${interval}&symbol=${symbol}&apikey=${apiKey}`;
     }
-    
+
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -35,69 +30,63 @@ class StockDataService{
       console.error(`Error fetching data for symbol ${symbol}:`, error);
       throw error; // Rethrow the error for handling in the calling code
     }
-  };
+  }
 
-  addStockToUser = async (userId, company, dates, highs) => {
+  async addStockToUser(userId, company, dates, highs, interval) {
     try {
-      // Reference to the stocksWeek subcollection for the current user
-      const stocksWeekCollectionRef = collection(db, 'users', userId, 'stocksWeek');
-  
-      // Check if the stocksWeek subcollection exists for the user
-      const snapshot = await getDocs(stocksWeekCollectionRef);
-      if (snapshot.empty) {
-        // Create the stocksWeek subcollection if it doesn't exist
-        await setDoc(doc(db, 'users', userId), { stocksWeek: true }, { merge: true });
+      let collectionName = '';
+      if (interval === "day") {
+        collectionName = "stocksDay";
+      } else if (interval === "week") {
+        collectionName = "stocksWeek";
+      } else if (interval === "month") {
+        collectionName = "stocksMonth";
+      } else {
+        collectionName = "stocksYear";
       }
-  
-      // Add the stock document to the user's stocksWeek subcollection
-      const newStockRef = await addDoc(stocksWeekCollectionRef, {
+
+      // Reference to the stocks subcollection for the current user
+      const stocksCollectionRef = collection(db, 'users', userId, collectionName);
+
+      // Check if the stocks subcollection exists for the user
+      const snapshot = await getDocs(stocksCollectionRef);
+      if (snapshot.empty) {
+        // Create the stocks subcollection if it doesn't exist
+        await setDoc(doc(db, 'users', userId), { [collectionName]: true }, { merge: true });
+      }
+
+      // Add the stock document to the user's stocks subcollection
+      const newStockRef = await addDoc(stocksCollectionRef, {
         company,
         dates,
         highs
       });
-  
+
       console.log('New stock added with ID:', newStockRef.id);
     } catch (error) {
       console.error('Error adding stock:', error);
       throw error;
     }
-  };
-  
-  
+  }
+  async getStocksDay(userId) {
+    const stocksCollectionRef = collection(db, 'users', userId, 'stocksDay');
+    return await getDocs(stocksCollectionRef);
+  }
 
-    updateStock = (id, newStock) => {
-        const stockDoc = doc(db, 'stockWeek');
-        return updateDoc(stockDoc, newStock);
-    };
+  async getStocksWeek(userId) {
+    const stocksCollectionRef = collection(db, 'users', userId, 'stocksWeek');
+    return await getDocs(stocksCollectionRef);
+  }
 
-    deleteStock = (id, newStock) => {
-        const stockDoc = doc(db, 'stockWeek');
-        return deleteDoc(stockDoc);
-    };
+  async getStocksMonth(userId) {
+    const stocksCollectionRef = collection(db, 'users', userId, 'stocksMonth');
+    return await getDocs(stocksCollectionRef);
+  }
 
-    async getUserStocks(userId) {
-      try {
-        // Reference the collection where user's stocks are stored
-        const userStocksRef = collection(db, 'users', userId, 'stocks');
-  
-        // Get all documents from the user's "stocks" subcollection
-        const querySnapshot = await getDocs(userStocksRef);
-        console.log('Snapshot:', querySnapshot);
-        return querySnapshot.docs.map(doc => doc.data());
-      } catch (error) {
-        console.error('Error fetching user stocks:', error);
-        throw error; // Rethrow the error for handling in the calling code
-      }
-    }
-
-    getStock = (id) => {
-        const stockDoc = doc(db, 'stock', id);
-        return getDoc(stockDoc);
-    };
-
-    //getHigh = (stockName, date){
-        
-   // }
+  async getStocksYear(userId) {
+    const stocksCollectionRef = collection(db, 'users', userId, 'stocksYear');
+    return await getDocs(stocksCollectionRef);
+  }
 }
 
 export default new StockDataService();

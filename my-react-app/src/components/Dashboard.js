@@ -1,69 +1,83 @@
-// Dashboard.js
-import React, { useEffect, useState } from 'react';
-import { getDocs, collection, query } from 'firebase/firestore';
-import { db, auth } from './firebase-config';
+import React, { useState, useEffect } from 'react';
+import StockDataService from '../services/stock-services';
+import { useAuth } from './AuthContext';
 
 const Dashboard = () => {
-  const [userStocks, setUserStocks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('stocksWeek'); // Default filter is week
+  const [stocks, setStocks] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const auth = useAuth(); // Access current user
+  const [selectedStockType, setSelectedStockType] = useState(null);
 
   useEffect(() => {
-    const fetchUserStocks = async (filter) => {
-      try {
-        const userId = auth.currentUser.uid;
-        const userStocksQuery = query(collection(db, `users/${userId}/${filter}`));
-        const userStocksSnapshot = await getDocs(userStocksQuery);
+    if (auth.user) {
+      fetchStocks(auth.user.uid, selectedStockType);
+    }
+  }, [auth.user, selectedStockType]);
 
-        const stocksData = userStocksSnapshot.docs.map(doc => ({
-          id: doc.id,
-          data: doc.data()
-        }));
-
-        setUserStocks(stocksData);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching user stocks:', error);
-        setLoading(false);
+  const fetchStocks = async (userId, stockType) => {
+    setLoading(true);
+    try {
+      let stocksCollectionRef;
+      switch (stockType) {
+        case 'day':
+          stocksCollectionRef = await StockDataService.getStocksDay(userId);
+          break;
+        case 'week':
+          stocksCollectionRef = await StockDataService.getStocksWeek(userId);
+          break;
+        case 'month':
+          stocksCollectionRef = await StockDataService.getStocksMonth(userId);
+          break;
+        case 'year':
+          stocksCollectionRef = await StockDataService.getStocksYear(userId);
+          break;
+        default:
+          break;
       }
-    };
-
-    fetchUserStocks(filter);
-  }, []);
-
-  const filterStocks = (period) => {
-    // Implement logic to filter stocks based on the selected period (week, month, year)
-    // For example, you can filter the stocks array and update state accordingly
-    setFilter(period);
+      if (stocksCollectionRef) {
+        const stocksData = stocksCollectionRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setStocks(stocksData);
+      }
+    } catch (error) {
+      console.error("Error fetching stocks:", error);
+      setError("Failed to fetch stocks. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleButtonClick = (type) => {
+    setSelectedStockType(type);
+  };
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <div>
-        <button onClick={() => filterStocks('stocksWeek')}>Week</button>
-        <button onClick={() => filterStocks('stocksMonth')}>Month</button>
-        <button onClick={() => filterStocks('stocksYear')}>Year</button>
+    <div className="dashboard-container">
+      <h2>Dashboard</h2>
+      <div className="buttons-container">
+        <button onClick={() => handleButtonClick('day')}>Day</button>
+        <button onClick={() => handleButtonClick('week')}>Week</button>
+        <button onClick={() => handleButtonClick('month')}>Month</button>
+        <button onClick={() => handleButtonClick('year')}>Year</button>
       </div>
-      <ul>
-        {userStocks.map(stock => (
-          <li key={stock.id}>
-            <h3>{stock.data.company}</h3>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="stocks-list">
+          {stocks.length > 0 ? (
             <ul>
-              {stock.data.dates.map((date, index) => (
-                <li key={date}>
-                  <p>Date: {date}</p>
-                  <p>High: {stock.data.highs[index]}</p>
+              {stocks.map(stock => (
+                <li key={stock.id}>
+                  Company: {stock.company}, Dates: {stock.dates.join(', ')}, Highs: {stock.highs.join(', ')}
                 </li>
               ))}
             </ul>
-          </li>
-        ))}
-      </ul>
+          ) : (
+            <p>No stocks available.</p>
+          )}
+        </div>
+      )}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
     </div>
   );
 };
