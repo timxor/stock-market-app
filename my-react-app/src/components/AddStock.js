@@ -30,7 +30,7 @@ const AddStock = () => {
 
     const metaData = stockData['Meta Data'];
     const timeSeries = stockData[timeSeriesKey];
-    const data = Object.keys(timeSeries).slice(0, 50).map(date => ({
+    const data = Object.keys(timeSeries).map(date => ({
       date: new Date(date),
       high: parseFloat(timeSeries[date]['2. high'])
     }));
@@ -42,7 +42,7 @@ const AddStock = () => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Line type="monotone" dataKey="high" stroke="#8884d8" />
+        <Line type="monotone" dataKey="high" stroke="#8884d8" dot={false}/>
       </LineChart>
     );
   };
