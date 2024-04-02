@@ -12,11 +12,12 @@ const Navbar = () => {
         <li>
           <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
         </li>
+        <Link to="/signup" className={location.pathname === '/signup' ? 'active' : ''}>Signup</Link>
+
         <li>
-          <Link to="/login" className={location.pathname === '/login' ? 'active' : ''}>Login</Link>
         </li>
         <li>
-          <Link to="/signup" className={location.pathname === '/signup' ? 'active' : ''}>Signup</Link>
+        <Link to="/login" className={location.pathname === '/login' ? 'active' : ''}>Login</Link>
         </li>
         <li>
           <Link to="/AddStock" className={location.pathname === '/AddStock' ? 'active' : ''}>Add Stock</Link>

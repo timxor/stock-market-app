@@ -7,13 +7,13 @@ class StockDataService {
   async getStockData(symbol, interval) {
     let url;
     if (interval === "day") {
-      interval = "INTRADAY";
-    } else if (interval === "week") {
       interval = "DAILY";
-    } else if (interval === "month") {
+    } else if (interval === "week") {
       interval = "WEEKLY";
-    } else {
+    } else if (interval === "month") {
       interval = "MONTHLY";
+    } else {
+      interval = "INTRADAY";
     }
 
     if (interval === "INTRADAY") {
@@ -42,7 +42,7 @@ class StockDataService {
       } else if (interval === "month") {
         collectionName = "stocksMonth";
       } else {
-        collectionName = "stocksYear";
+        collectionName = "stocksIntraday";
       }
 
       // Reference to the stocks subcollection for the current user
@@ -83,8 +83,8 @@ class StockDataService {
     return await getDocs(stocksCollectionRef);
   }
 
-  async getStocksYear(userId) {
-    const stocksCollectionRef = collection(db, 'users', userId, 'stocksYear');
+  async getStocksIntraday(userId) {
+    const stocksCollectionRef = collection(db, 'users', userId, 'stocksIntraday');
     return await getDocs(stocksCollectionRef);
   }
 }
