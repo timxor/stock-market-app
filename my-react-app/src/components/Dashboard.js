@@ -54,12 +54,13 @@ const Dashboard = () => {
 
   const transformStockData = (stocks) => {
     return stocks.map(stock => {
-      return stock.dates.map((date, index) => ({
+      return stock.dates.slice(0, 20).map((date, index) => ({ // Limit to first 20 dates
         date: new Date(date), // Convert date string to Date object
         high: stock.highs[index]
       }));
     });
   };
+  
 
   return (
     <div className="dashboard-container">
@@ -76,12 +77,12 @@ const Dashboard = () => {
         <div className="stocks-chart">
           {stocks.length > 0 ? (
             <LineChart width={800}
-            height={800}
+            height={400}
             data={stocks[0]?.data || []}
             margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
-              <YAxis type="number" domain={[0, 'auto']} />
+              <YAxis />
               <Tooltip />
               <Legend />
               {transformStockData(stocks).map((stockData, index) => (
