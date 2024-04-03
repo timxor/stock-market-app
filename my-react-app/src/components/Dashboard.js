@@ -54,10 +54,10 @@ const Dashboard = () => {
 
   const transformStockData = (stocks) => {
     return stocks.map(stock => {
-      return stock.dates.slice(0, 20).map((date, index) => ({ // Limit to first 20 dates
+      return stock.dates.map((date, index) => ({ // Limit to first 20 dates
         date: new Date(date), // Convert date string to Date object
         high: stock.highs[index]
-      }));
+      })).sort((a, b) => a.date - b.date);;
     });
   };
   
@@ -93,6 +93,7 @@ const Dashboard = () => {
                   dataKey="high"
                   stroke={`#${Math.floor(Math.random()*16777215).toString(16)}`}
                   name={stocks[index].company}
+                  dot={false}
                 />
               ))}
             </LineChart>

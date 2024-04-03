@@ -66,8 +66,8 @@ const AddStock = () => {
       const metaData = stockData['Meta Data'];
       const timeSeries = stockData[timeSeriesKey];
       const company = metaData['2. Symbol'];
-      const dates = Object.keys(timeSeries).slice(0, 50);
-      const highs = Object.values(timeSeries).slice(0, 50).map(data => data['2. high']);
+      const dates = Object.keys(timeSeries).slice(0,100);
+      const highs = Object.values(timeSeries).slice(0,100).map(data => data['2. high']);
   
       if (auth.user) {
         await StockDataService.addStockToUser(auth.user.uid, company, dates, highs, interval);
