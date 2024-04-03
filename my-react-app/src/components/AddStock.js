@@ -35,6 +35,9 @@ const AddStock = () => {
       high: parseFloat(timeSeries[date]['2. high'])
     }));
 
+    // Sort the data by date
+    data.sort((a, b) => a.date - b.date);
+
     return (
       <LineChart width={800} height={400} data={data} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
         <CartesianGrid strokeDasharray="3 3" />
