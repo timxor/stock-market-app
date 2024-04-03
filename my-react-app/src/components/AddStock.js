@@ -22,33 +22,34 @@ const AddStock = () => {
 
   const renderStockGraph = () => {
     if (!stockData || !interval) return null;
-
+  
     const timeSeriesKey = interval === 'day' ? 'Time Series (Daily)' :
                           interval === 'week' ? 'Weekly Time Series' :
                           interval === 'month' ? 'Monthly Time Series' :
                           interval === 'intraday' ? 'Time Series (5min)' : '';
-
+  
     const metaData = stockData['Meta Data'];
     const timeSeries = stockData[timeSeriesKey];
     const data = Object.keys(timeSeries).map(date => ({
       date: new Date(date),
       high: parseFloat(timeSeries[date]['2. high'])
     }));
-
+  
     // Sort the data by date
     data.sort((a, b) => a.date - b.date);
-
+  
     return (
-      <LineChart width={800} height={400} data={data} margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
+      <LineChart width={800} height={400} data={data} margin={{ top: 20, right: 50, bottom: 50, left: 30 }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis />
+        <XAxis dataKey="date" label={{ value: 'Date', position: 'insideBottom', dy: 10 }} />
+        <YAxis label={{ value: 'Stock Price (High)', angle: -90, position: 'insideLeft', dx: -10 }} />
         <Tooltip />
-        <Legend />
+        <Legend verticalAlign="top" height={36} />
         <Line type="monotone" dataKey="high" stroke="#8884d8" dot={false}/>
       </LineChart>
     );
   };
+  
 
   const handleSaveStock = async () => {
     try {
