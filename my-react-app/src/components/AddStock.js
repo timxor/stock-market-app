@@ -53,12 +53,37 @@ const AddStock = () => {
 
   const handleSaveStock = async () => {
     try {
-      // Your existing code for saving stock data...
+      if (!stockData || !interval) {
+        setError("Stock data or interval is not available.");
+        return;
+      }
+  
+      const timeSeriesKey = interval === 'day' ? 'Time Series (Daily)' :
+                             interval === 'week' ? 'Weekly Time Series' :
+                             interval === 'month' ? 'Monthly Time Series' :
+                             interval === 'intraday' ? 'Time Series (5min)' : '';
+  
+      const metaData = stockData['Meta Data'];
+      const timeSeries = stockData[timeSeriesKey];
+      const company = metaData['2. Symbol'];
+      const dates = Object.keys(timeSeries).slice(0, 50);
+      const highs = Object.values(timeSeries).slice(0, 50).map(data => data['2. high']);
+  
+      if (auth.user) {
+        await StockDataService.addStockToUser(auth.user.uid, company, dates, highs, interval);
+        console.log("Stock added to user successfully!");
+        setError(null);
+        setStockData(null);
+        setSymbol('');
+        setInterval(null);
+      } else {
+        setError("User not authenticated.");
+      }
     } catch (error) {
       setError("Error saving stock to user. Please try again later.");
     }
   };
-  
+    
   return (
     <div className="add-stock-container">
       <label>
