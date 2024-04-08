@@ -115,7 +115,7 @@
 			  .attr("stop-color", "#85bb65")
 			  .attr("stop-opacity", 0);
 			
-		    	function generateGraph(option) {
+		    function generateGraph(option) {
 				svg.selectAll("*").remove();
 				const gradient = svg.append("defs")
 				      .append("linearGradient")
@@ -137,22 +137,29 @@
 				      .attr("stop-opacity", 0);
 				
 				// Load and process the data
-				d3.csv('Apple Inc Historical Price Data.csv').then(data => {
-				  // Parse the Date and convert the High to a number
-				  const parseDate = d3.timeParse("%m/%d/%Y");
-				  data.forEach(d => {
-				    d.Date = parseDate(d.Date);
-				    d.High = Number(d.High.replace(/[^0-9\.-]+/g,""));
-				  });
-				  data.reverse();
+				  	
+				  var arr1 = ["2024-05-03", "2024-03-22"]
+				  var arr2 = ["190.8200", "192.9850"]
+				  var arr = [];
 
-				  if (option == 2) {
+				  // Parse the Date and convert the High to a number
+				  const parseDate = d3.timeParse("%Y-%m-%d");
+				  arr1.forEach((d, i) => {
+				    arr.push({
+                    	Date: parseDate(d),
+                    	High: Number(arr2[i].replace(/[^0-9\.-]+/g,""))
+                    }); 
+				  });
+				  arr.reverse();
+				  data = arr;
+				
+				  /*if (option == 2) {
 				    data = data.slice(-252 * 5, -1);
-				  }
+				  }*/
 				  console.log(data); 
 				  // Set the domains for the x and y scales
 				  x.domain(d3.extent(data, d => d.Date));
-				  y.domain([0, d3.max(data, d => d.High)]);
+				  y.domain(d3.extent(data, d => d.High));
 				  
 				  svg.append("g")
 				    .attr("class", "x-axis")
@@ -293,7 +300,6 @@
 						tooltipLineY.style("display", "none");
 			
 					});
-				});
 			}
 		    	
 		    	generateGraph(1);
