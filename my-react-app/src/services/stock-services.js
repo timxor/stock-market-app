@@ -108,7 +108,6 @@ class StockDataService {
       }
       if (stocksCollectionRef) {
         const stocksData = stocksCollectionRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log(stocksData);
         return stocksData;
       }
   }
