@@ -87,6 +87,31 @@ class StockDataService {
     const stocksCollectionRef = collection(db, 'users', userId, 'stocksIntraday');
     return await getDocs(stocksCollectionRef);
   }
-}
 
+  async fetchStocks(userId, stockType) {
+      let stocksCollectionRef;
+      switch (stockType) {
+        case 'day':
+          stocksCollectionRef = await this.getStocksDay(userId);
+          break;
+        case 'week':
+          stocksCollectionRef = await this.getStocksWeek(userId);
+          break;
+        case 'month':
+          stocksCollectionRef = await this.getStocksMonth(userId);
+          break;
+        case 'intraday':
+          stocksCollectionRef = await this.getStocksIntraday(userId);
+          break;
+        default:
+          break;
+      }
+      if (stocksCollectionRef) {
+        const stocksData = stocksCollectionRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log(stocksData);
+        return stocksData;
+      }
+  }
+
+}
 export default new StockDataService();
