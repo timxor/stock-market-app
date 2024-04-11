@@ -9,6 +9,7 @@ import SignUp from './components/SignUp';
 import AddStock from './components/AddStock';
 import Dashboard from './components/Dashboard';
 import Navbar from './components/Navbar';
+import BusinessNews from './components/NewsPage';
 import './App.css';
 
 function App() {
