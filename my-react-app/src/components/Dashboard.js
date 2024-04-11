@@ -34,13 +34,11 @@ const Dashboard = () => {
     setSelectedStockType(type);
   };
 
-  const transformStockData = (stocks) => {
-    return stocks.map(stock => {
-      return stock.dates.map((date, index) => ({ 
-        date: new Date(date), // Convert date string to Date object
-        high: stock.highs[index]
-      })).sort((a, b) => a.date - b.date);
-    });
+  const transformStockData = (stock) => {
+    return stock.dates.map((date, index) => ({ 
+      date: new Date(date), // Convert date string to Date object
+      high: stock.highs[index]
+    })).sort((a, b) => a.date - b.date);
   };
 
   return (
@@ -54,29 +52,30 @@ const Dashboard = () => {
       </div>
       <div className="stocks-chart">
         {stocks.length > 0 ? (
-          <LineChart
-            width={800}
-            height={400}
-            data={stocks[0]?.data || []}
-            margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {transformStockData(stocks).map((stockData, index) => (
-              <Line
-                key={index}
-                type="monotone"
-                data={stockData}
-                dataKey="high"
-                stroke={`#${Math.floor(Math.random()*16777215).toString(16)}`}
-                name={stocks[index].company}
-                dot={false}
-              />
-            ))}
-          </LineChart>
+          stocks.map((stock, index) => (
+            <div key={index} className="stock-graph">
+              <h3>{stock.company}</h3>
+              <LineChart
+                width={800}
+                height={400}
+                data={transformStockData(stock)}
+                margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="high"
+                  stroke={`#${Math.floor(Math.random()*16777215).toString(16)}`}
+                  name={stock.company}
+                  dot={false}
+                />
+              </LineChart>
+            </div>
+          ))
         ) : (
           <p>No stocks available.</p>
         )}
