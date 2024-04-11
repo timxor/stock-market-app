@@ -1,5 +1,5 @@
 import { db } from '../components/firebase-config';
-import { collection, getDocs, addDoc, doc, setDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, setDoc, updateDoc, where, query, limit } from 'firebase/firestore';
 
 const apiKey = 'ML4ZZM2TS1V1DNRN';
 
@@ -55,19 +55,32 @@ class StockDataService {
         await setDoc(doc(db, 'users', userId), { [collectionName]: true }, { merge: true });
       }
 
-      // Add the stock document to the user's stocks subcollection
-      const newStockRef = await addDoc(stocksCollectionRef, {
-        company,
-        dates,
-        highs
-      });
-
-      console.log('New stock added with ID:', newStockRef.id);
+      // Check if the user already has a stock with the same company
+      const querySnapshot = await getDocs(query(stocksCollectionRef, where('company', '==', company), limit(1)));
+      if (!querySnapshot.empty) {
+        // If a stock with the same company exists, update it with the new data
+        const docId = querySnapshot.docs[0].id;
+        const stockDocRef = doc(stocksCollectionRef, docId);
+        await updateDoc(stockDocRef, {
+          dates,
+          highs
+        });
+        console.log(`Stock for company ${company} updated for user ${userId}`);
+      } else {
+        // Otherwise, add the new stock document to the user's stocks subcollection
+        const newStockRef = await addDoc(stocksCollectionRef, {
+          company,
+          dates,
+          highs
+        });
+        console.log('New stock added with ID:', newStockRef.id);
+      }
     } catch (error) {
       console.error('Error adding stock:', error);
       throw error;
     }
   }
+
   async getStocksDay(userId) {
     const stocksCollectionRef = collection(db, 'users', userId, 'stocksDay');
     return await getDocs(stocksCollectionRef);
@@ -88,29 +101,58 @@ class StockDataService {
     return await getDocs(stocksCollectionRef);
   }
 
-  async fetchStocks(userId, stockType) {
-      let stocksCollectionRef;
-      switch (stockType) {
-        case 'day':
-          stocksCollectionRef = await this.getStocksDay(userId);
-          break;
-        case 'week':
-          stocksCollectionRef = await this.getStocksWeek(userId);
-          break;
-        case 'month':
-          stocksCollectionRef = await this.getStocksMonth(userId);
-          break;
-        case 'intraday':
-          stocksCollectionRef = await this.getStocksIntraday(userId);
-          break;
-        default:
-          break;
+  async getStockByCompany(userId, company, interval) {
+    try {
+      let collectionName = '';
+      if (interval === "day") {
+        collectionName = "stocksDay";
+      } else if (interval === "week") {
+        collectionName = "stocksWeek";
+      } else if (interval === "month") {
+        collectionName = "stocksMonth";
+      } else {
+        collectionName = "stocksIntraday";
       }
-      if (stocksCollectionRef) {
-        const stocksData = stocksCollectionRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        return stocksData;
+
+      const stocksCollectionRef = collection(db, 'users', userId, collectionName);
+      const querySnapshot = await getDocs(query(stocksCollectionRef, where('company', '==', company), limit(1)));
+
+      if (!querySnapshot.empty) {
+        const docData = querySnapshot.docs[0].data();
+        return docData;
+      } else {
+        return null; // If no stock with the specified company is found
       }
+    } catch (error) {
+      console.error('Error fetching stock by company:', error);
+      throw error;
+    }
   }
 
+
+  async fetchStocks(userId, stockType) {
+    let stocksCollectionRef;
+    switch (stockType) {
+      case 'day':
+        stocksCollectionRef = await this.getStocksDay(userId);
+        break;
+      case 'week':
+        stocksCollectionRef = await this.getStocksWeek(userId);
+        break;
+      case 'month':
+        stocksCollectionRef = await this.getStocksMonth(userId);
+        break;
+      case 'intraday':
+        stocksCollectionRef = await this.getStocksIntraday(userId);
+        break;
+      default:
+        break;
+    }
+    if (stocksCollectionRef) {
+      const stocksData = stocksCollectionRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return stocksData;
+    }
+  }
 }
+
 export default new StockDataService();
