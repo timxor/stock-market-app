@@ -32,6 +32,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/addstock" element={<AddStock />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/businessnews" element={<BusinessNews />} />
           </Routes>
         </main>
         <footer className="footer bg-dark text-white text-center py-3">
