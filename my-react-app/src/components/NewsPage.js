@@ -16,6 +16,11 @@ const BusinessNews = () => {
     }
   };
 
+  // erase stock data after symbol change
+  useEffect(() => {
+    setStockData(null);
+  }, [symbol]);
+
   return (
     <div>
       <label>
