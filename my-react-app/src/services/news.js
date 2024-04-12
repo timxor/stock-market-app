@@ -1,5 +1,5 @@
 //import React, { useEffect, useState } from 'react';
-const apiKey = "YGKZMNJ8NLX6DKRI";
+const apiKey = "";
 //const request = require('request');
 
 class NewsDataService {
