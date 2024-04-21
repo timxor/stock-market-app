@@ -85,4 +85,44 @@ body {
   color: #fff;
 }
 
+/* AddStock.css */
+
+.search-bar {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.save-button {
+  background-color: #008CBA;
+  color: white;
+}
+
+.error-message {
+  color: red;
+}
+
 

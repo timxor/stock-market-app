@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import StockDataService from '../services/stock-services';
 import { useAuth } from './AuthContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import './AddStock.css'; // Import custom CSS for styling
 
 const AddStock = () => {
   const [symbol, setSymbol] = useState('');
   const [stockData, setStockData] = useState(null);
   const [interval, setInterval] = useState(null);
+  const [selectedButton, setSelectedButton] = useState(null); // State to track selected button
   const auth = useAuth();
   const [error, setError] = useState(null);
-
+  
   useEffect(() => {
     const fetchTopStocks = async () => {
       try {
@@ -28,9 +30,18 @@ const AddStock = () => {
 
   const handleGetStockData = async (interval) => {
     try {
+      if (!symbol) {
+        setError("Please enter a valid stock symbol.");
+        return;
+      }
+      setSelectedButton(interval); // Set selected button when fetching data
       const data = await StockDataService.getStockData(symbol, interval);
-      setStockData([data]);
-      setInterval(interval);
+      if (data && data['Meta Data'] && data['Meta Data']['2. Symbol']) {
+        setStockData([data]);
+        setInterval(interval);
+      } else {
+        throw new Error("Invalid or unavailable stock symbol.");
+      }
     } catch (error) {
       setError(error.message);
     }
@@ -57,36 +68,40 @@ const AddStock = () => {
   };
 
   const formatStockData = (stock) => {
-    const timeSeriesKey = interval === 'day' ? 'Time Series (Daily)' :
-                          interval === 'week' ? 'Weekly Time Series' :
-                          interval === 'month' ? 'Monthly Time Series' :
-                          interval === 'intraday' ? 'Time Series (5min)' : '';
-
-    const timeSeries = stock[timeSeriesKey];
-    return Object.keys(timeSeries).map(date => ({
-      date: new Date(date).toISOString().split('T')[0],
-      high: parseFloat(timeSeries[date]['2. high'])
-    })).sort((a, b) => new Date(a.date) - new Date(b.date));
+    try {
+      const timeSeriesKey = interval === 'day' ? 'Time Series (Daily)' :
+                              interval === 'week' ? 'Weekly Time Series' :
+                              interval === 'month' ? 'Monthly Time Series' :
+                              interval === 'intraday' ? 'Time Series (5min)' : '';
+  
+      const timeSeries = stock[timeSeriesKey];
+      return Object.keys(timeSeries).map(date => ({
+        date: new Date(date).toISOString().split('T')[0],
+        high: parseFloat(timeSeries[date]['2. high'])
+      })).sort((a, b) => new Date(a.date) - new Date(b.date));
+    } catch (error) {
+      setError("Error parsing API response: " + error.message);
+      return [];
+    }
   };
 
   const handleSaveStock = async () => {
     try {
       if (!stockData || !interval) {
-        setError("Stock data or interval is not available.");
-        return;
+        throw new Error("Stock data or interval is not available.");
       }
-  
+
       const timeSeriesKey = interval === 'day' ? 'Time Series (Daily)' :
                              interval === 'week' ? 'Weekly Time Series' :
                              interval === 'month' ? 'Monthly Time Series' :
                              interval === 'intraday' ? 'Time Series (5min)' : '';
-  
+
       const timeSeries = stockData[0][timeSeriesKey];
       const metaData = stockData[0]['Meta Data'];
       const company = metaData['2. Symbol'];
       const dates = Object.keys(timeSeries).slice(0, 100);
       const highs = Object.values(timeSeries).slice(0, 100).map(data => data['2. high']);
-  
+
       if (auth.user) {
         const existingStock = await StockDataService.getStockByCompany(auth.user.uid, company);
         if (existingStock) {
@@ -96,36 +111,37 @@ const AddStock = () => {
           await StockDataService.addStockToUser(auth.user.uid, company, dates, highs, interval);
           console.log("New stock added to user successfully!");
         }
-  
+
         setError(null);
         setStockData(null);
         setSymbol('');
         setInterval(null);
       } else {
-        setError("User not authenticated.");
+        throw new Error("User not authenticated.");
       }
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
-  
+
 
   return (
-    <div className="add-stock-container">
+<div className="add-stock-container">
       <label>
         Enter Stock Symbol:
         <input
           type="text"
           value={symbol}
           onChange={(e) => setSymbol(e.target.value)}
+          className="search-bar"
         />
       </label>
-      <div>
-        <button onClick={() => handleGetStockData('intraday')}>Intraday</button>
-        <button onClick={() => handleGetStockData('day')}>Day</button>
-        <button onClick={() => handleGetStockData('week')}>Week</button>
-        <button onClick={() => handleGetStockData('month')}>Month</button>
-        <button onClick={handleSaveStock} disabled={!interval}>Save Stock</button>
+      <div className="button-container">
+        <button onClick={() => handleGetStockData('intraday')} className={`button ${selectedButton === 'intraday' ? 'active' : ''}`}>Intraday</button>
+        <button onClick={() => handleGetStockData('day')} className={`button ${selectedButton === 'day' ? 'active' : ''}`}>Day</button>
+        <button onClick={() => handleGetStockData('week')} className={`button ${selectedButton === 'week' ? 'active' : ''}`}>Week</button>
+        <button onClick={() => handleGetStockData('month')} className={`button ${selectedButton === 'month' ? 'active' : ''}`}>Month</button>
+        <button onClick={handleSaveStock} disabled={!interval} className="button">Save Stock</button>
       </div>
 
       {renderStockGraphs()}

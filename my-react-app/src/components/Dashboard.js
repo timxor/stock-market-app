@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import StockDataService from '../services/stock-services';
 import { useAuth } from './AuthContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import './AddStock.css'; // Import custom CSS for styling
 
 const Dashboard = () => {
   const [stocks, setStocks] = useState([]);
@@ -44,11 +45,11 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <h2>Dashboard</h2>
-      <div className="buttons-container">
-        <button onClick={() => handleButtonClick('intraday')}>Intraday</button>
-        <button onClick={() => handleButtonClick('day')}>Day</button>
-        <button onClick={() => handleButtonClick('week')}>Week</button>
-        <button onClick={() => handleButtonClick('month')}>Month</button>
+      <div className="button-container">
+      <button onClick={() => handleButtonClick('intraday')} className={`button ${selectedStockType === 'intraday' ? 'active' : ''}`}>Intraday</button>
+        <button onClick={() => handleButtonClick('day')} className={`button ${selectedStockType === 'day' ? 'active' : ''}`}>Day</button>
+        <button onClick={() => handleButtonClick('week')} className={`button ${selectedStockType === 'week' ? 'active' : ''}`}>Week</button>
+        <button onClick={() => handleButtonClick('month')} className={`button ${selectedStockType === 'month' ? 'active' : ''}`}>Month</button>
       </div>
       <div className="stocks-chart">
         {stocks.length > 0 ? (
