@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Shares Form</h2>
+
+<form action="" id="form">
+  <label for="stock">Stock:</label><br>
+  <input type="text" id="stock" name="stock"><br>
+  <label for="shares">Shares Bought:</label><br>
+  <input type="text" id="shares" name="shares"><br>
+  <label for="buyPrice">Buy Price:</label><br>
+  <input type="text" id="buyPrice" name="buyPrice"><br><br>
+  <button type="submit">Submit</button>
+</form> 
+
+<script type="text/javascript">
+    let form = document.getElementById("form");
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    var arrPrices = [
+    "531.4899",
+    "530.7000",
+    "530.0000",
+    "507.2400",
+    "497.5300",
+    "497.4300",
+    "492.8900",
+    "499.8900",
+    "510.0000",
+    "507.2200",
+    "509.9700",
+    "515.0400",
+    "508.1999",
+    "496.6296",
+    "497.4200",
+    "491.8300",
+    "501.3500",
+    "500.9800",
+    "502.3100",
+    "497.3200",
+    "523.5700",
+    "519.8500",
+    "502.9700",
+    "495.5800",
+    "504.4200",
+    "504.2500",
+    "491.7000",
+    "491.0500",
+    "487.2700",
+    "486.1400",
+    "494.3599",
+    "489.9900",
+    "469.0000",
+    "476.1800",
+    "478.9600",
+    "488.6200",
+    "474.1100",
+    "467.8900",
+    "479.1450",
+    "473.5900",
+    "470.5900",
+    "471.5200",
+    "467.1200",
+    "471.9000",
+    "485.9600",
+    "400.5000",
+    "398.0000",
+    "406.3600",
+    "402.9300",
+    "396.7900",
+    "395.4900",
+    "396.1500",
+    "388.3800",
+    "390.3525",
+    "384.3600",
+    "376.8500",
+    "368.5400",
+    "375.6100",
+    "377.0600",
+    "372.7800",
+    "372.9400",
+    "360.6400",
+    "358.9800",
+    "353.5000",
+    "348.1499",
+    "347.9500",
+    "353.1600",
+    "360.0000",
+    "361.9000",
+    "359.0000",
+    "356.9800",
+    "357.1999",
+    "356.4050",
+    "354.9600",
+    "353.6000",
+    "347.5600",
+    "338.6600",
+    "334.7000",
+    "338.3700",
+    "334.4700",
+    "329.8900",
+    "333.1700",
+    "328.2400",
+    "322.2500",
+    "321.8800",
+    "320.8600",
+    "326.8600",
+    "333.5000",
+    "339.9000",
+    "339.3750",
+    "339.9000",
+    "341.8556",
+    "342.9200",
+    "339.9015",
+    "341.8700",
+    "335.5000",
+    "334.5800",
+    "338.4000",
+    "338.1000",
+    "332.3300"
+]
+
+    let buyPrice = document.getElementById("buyPrice");
+    let shares = document.getElementById("shares");
+
+    document.write("Bought at: $");
+    document.writeln((parseFloat(buyPrice.value) * parseFloat(shares.value)).toString());
+    document.write("<br>");
+    document.write("Current Value: $");
+    document.writeln((parseFloat(arrPrices[0]) * parseFloat(shares.value)).toString());
+    document.write("<br>");
+    document.write("Performance: ");
+
+    if (parseFloat(buyPrice.value) > parseFloat(arrPrices[0])) {
+        document.write("Up ");
+        document.write(((parseFloat(buyPrice.value)  - parseFloat(arrPrices[0])) / parseFloat(buyPrice.value) * 100).toFixed(2).toString());
+        document.write("%");
+    }
+    else {
+        document.write("Down ");
+        document.write(((parseFloat(arrPrices[0]) - parseFloat(buyPrice.value)) / parseFloat(buyPrice.value) * 100).toFixed(2).toString());
+        document.write("%");
+    }
+});
+</script>
+
+</body>
+</html>
