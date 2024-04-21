@@ -1,6 +1,4 @@
-//import React, { useEffect, useState } from 'react';
-const apiKey = "";
-//const request = require('request');
+const apiKey = process.env.REACT_APP_STOCK_API_KEY;
 
 class NewsDataService {
   async getNewsDataAddStock (symbol) {

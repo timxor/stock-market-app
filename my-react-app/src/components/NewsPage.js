@@ -11,7 +11,7 @@ const BusinessNews = () => {
         const rawStockData = await NewsDataService.getNewsDataAddStock(symbol);
         setStockData(rawStockData);
       } catch (error) {
-        console.error(`Error fetching news data for symbol ${symbol}:`, error);
+        console.error(`Error, fetching news data for symbol ${symbol}:`, error);
       }
     }
   };
@@ -20,6 +20,16 @@ const BusinessNews = () => {
   useEffect(() => {
     setStockData(null);
   }, [symbol]);
+
+  useEffect(() => {
+    // Assuming stockData is an object with the provided JSON structure
+    if (stockData && stockData.feed) {
+      stockData.feed.forEach(item => {
+        const url = item.url;
+        console.log(url); // Output each URL
+      });
+    }
+  }, [stockData]);
 
   return (
     <div>
@@ -36,7 +46,13 @@ const BusinessNews = () => {
       {stockData && (
         <div>
           <h2>{symbol}</h2>
-          <pre>{JSON.stringify(stockData, null, 2)}</pre>
+          <ul>
+            {stockData.feed.map((item, index) => (
+              <li key={index}>
+                <a href={item.url}>{item.url}</a>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
