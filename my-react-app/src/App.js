@@ -17,22 +17,10 @@ function App() {
     <AuthProvider>
       <div className="app-container">
         <header className="header">
-          <div className="container d-flex justify-content-between align-items-center">
-            <h1 className="logo text-white">Stock App</h1>
-            <Navbar />
-            <div>
-              <SignOutButton />
-            </div>
-          </div>
+          
         </header>
         <main className="container py-4">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/addstock" element={<AddStock />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-          </Routes>
+         
         </main>
         <footer className="footer bg-dark text-white text-center py-3">
           <div className="container">
