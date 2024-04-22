@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState } from 'react';
 import { auth } from "./firebase-config";
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -25,22 +24,26 @@ const Login = () => {
         }
     }
 
-    return(
+    return (
         <div className="login-container">
-            <form onSubmit={signIn}>
-                <h1>Log In</h1>
-                <input type="email" 
-                    placeholder="Enter Your Email" 
-                    value={email} 
+            <form className="login-form" onSubmit={signIn}>
+                <h1 className="login-heading">Log In</h1>
+                <input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="login-input"
                 />
-                <input type="password" 
-                    placeholder="Enter Your Password" 
-                    value={password} 
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    className="login-input"
                 />
-                <button type="submit">Log In</button>
-                {error && <p className="error-message">{error}</p>} {/* Display error message if error exists */}
+                <button type="submit" className="login-button">Log In</button>
+                {error && <p className="error-message">{error}</p>}
             </form>
         </div>
     );

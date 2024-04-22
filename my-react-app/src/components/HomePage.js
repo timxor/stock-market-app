@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './AddStock.css'; // Import custom CSS for styling
 
 const HomePage = () => {
   return (
@@ -8,11 +9,11 @@ const HomePage = () => {
       <div>
         {/* Button to navigate to the login page */}
         <Link to="/login">
-          <button>Login</button>
+          <button className='button'>Login</button>
         </Link>
         {/* Button to navigate to the signup page */}
         <Link to="/signup">
-          <button>Sign Up</button>
+          <button className='button'>Sign Up</button>
         </Link>
       </div>
     </div>
