@@ -25,8 +25,8 @@ const Navbar = () => {
         <li>
           <Link to="/dashboard" className={location.pathname === '/dashboard' ? 'active' : ''}>Dashboard</Link>
         </li>
-        <li>
-          <Link to="/advice" className={location.pathname === '/advice' ? 'active' : ''}>Advice</Link>
+        <li> 
+          <Link to="/BusinessNews" className={location.pathname === '/BusinessNews' ? 'active' : ''}>Business News</Link>
         </li>
         {/* Add more navigation links as needed */}
       </ul>
