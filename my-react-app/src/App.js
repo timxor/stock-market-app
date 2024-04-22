@@ -11,6 +11,8 @@ import Dashboard from './components/Dashboard';
 import Navbar from './components/Navbar';
 import './App.css';
 import Advice from "./components/Advice";
+import BusinessNews from './components/NewsPage';
+
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
             <Route path="/addstock" element={<AddStock />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/advice" element={<Advice />} />
+            <Route path="/businessnews" element={<BusinessNews />} />
           </Routes>
         </main>
         <footer className="footer bg-dark text-white text-center py-3">
