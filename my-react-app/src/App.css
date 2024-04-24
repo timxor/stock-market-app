@@ -1,33 +1,124 @@
-body {
-  background-color: rgb(20, 17, 12);
-
-  height: 100vh;
-  overflow: hidden;
+body{
+  background: #855d31;
+ }
+ 
+.dashboard-container {
+  align-items: center;
+}
+.container {
+  margin: 0 auto;
+  padding: 2vh; /* Adjust padding based on viewport height */
+  max-width: 1200px; /* Limit maximum width for better readability */
 }
 
-.ml15 {
-  font-weight: 800;
-  font-size: 3.8em;
-  text-transform: uppercase;
-  letter-spacing: 0.5em;
-  text-align: center;
+.header {
+  background-color: #222;
+  color: #fff;
+  padding: 2vh; /* Adjust padding based on viewport height */
 }
 
-.ml15 .word {
-  display: inline;
-  line-height: 1em;
-  color: #ffffff;
-  margin-right: 10px;
-}  
-
-
-.ml15.move-closer .word {
-  margin-left: 25px; /* Adjust the spacing between words after animation */
+.button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 1vh 2vh; /* Adjust padding based on viewport height */
+  cursor: pointer;
+  border-radius: 0.5vh; /* Adjust border radius based on viewport height */
+  transition: background-color 0.3s ease-in-out;
 }
 
-img {
-  display: block; /* This ensures the image is treated as a block element */
-  margin: 0 auto; /* This centers the image horizontally */
-  max-width: 15%;
-  height: auto;
+.button:hover {
+  background-color: #0056b3;
 }
+
+.form-group {
+  margin-bottom: 2vh; /* Adjust margin based on viewport height */
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 1vh; /* Adjust margin based on viewport height */
+  color: #333;
+}
+
+.input-field {
+  width: 100%;
+  padding: 1vh;
+  border: 1px solid #ccc;
+  border-radius: 0.5vh;
+}
+
+.link {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.link:hover {
+  color: #0056b3;
+}
+
+/* Add the SignOutButton styling */
+.signout-button {
+  display: flex;
+  align-items: center;
+}
+
+.signout-button button {
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 0.5vh 1vh;
+  border-radius: 0.5vh;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.signout-button button:hover {
+  background-color: #ff6600; /* Orange color */
+}
+
+/* Footer styles */
+.footer {
+  background-color: #343a40;
+  color: #fff;
+}
+ 
+ #side_nav{
+  background: #000000;
+  min-width: 250px;
+  max-width: 250px;
+  transition: all 0.3s;
+ }
+ .content{
+    min-height: 100vh;
+    width: 100%;
+ }
+ hr.h-color{
+   background: #eee;
+ }
+ 
+ .sidebar li.active{
+    background: #eee;
+    border-radius: 8px;
+ }
+ 
+ .sidebar li.active a, .sidebar li.active a:hover {
+  color: #000;
+ }
+ .sidebar li a{
+  color: #fff;
+ }
+ 
+ @media(max-width: 767px){
+  #side_nav{
+    margin-left: -250px;
+    position: absolute;
+    min-height: 100vh;
+    z-index: 1;
+ 
+  }
+  #side_nav.active{
+    margin-left: 0;
+   }
+ }

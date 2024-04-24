@@ -1,79 +1,103 @@
-import React, { useEffect } from "react";
-import { Routes, Route } from "react-router-dom"; // Removed BrowserRouter import
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from './components/AuthContext';
-import SignOutButton from './components/SignOut';
-import HomePage from './components/HomePage';
-import Login from './components/Login'; // Import login component
-import SignUp from './components/SignUp';
-import AddStock from './components/AddStock';
 import Dashboard from './components/Dashboard';
-import Navbar from './components/Navbar';
-import BusinessNews from './components/NewsPage';
-import anime from 'animejs/lib/anime.es.js';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import $ from 'jquery';
+
+
+  
 
 import './App.css';
 
 function App() {
+  const location = useLocation(); 
+
   useEffect(() => {
-    anime.timeline({
-      complete: function() {
-        document.querySelector('.ml15').classList.add('move-closer');
-      }
-    })
-    .add({
-      targets: '.ml15 .word',
-      scale: [14, 1],
-      opacity: [0, 1],
-      easing: "easeOutCirc",
-      duration: 800,
-      delay: (el, i) => 800 * i
+    // Add event listener for clicking on sidebar items
+    $(".sidebar ul li").on('click', function () {
+      $(".sidebar ul li.active").removeClass('active');
+      $(this).addClass('active');
     });
-    // Define the scroll event handler
-    const handleScroll = () => {
-      // Check if the user has scrolled to a certain position (e.g., 500 pixels from the top)
-      if (window.scrollY > 500) {
-        // Dynamically load the login component
-        import('./components/Login').then(LoginComponent => {
-          // Do something with LoginComponent (e.g., render it or navigate to it)
-          console.log('Login component loaded:', LoginComponent);
-        });
-        
-        // Remove the scroll event listener to prevent loading the login component multiple times
-        window.removeEventListener('scroll', handleScroll);
-      }
-    };
 
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
+    // Add event listener for opening sidebar
+    $('.open-btn').on('click', function () {
+      $('.sidebar').addClass('active');
+    });
 
-    // Clean up by removing the scroll event listener when the component unmounts
+    // Add event listener for closing sidebar
+    $('.close-btn').on('click', function () {
+      $('.sidebar').removeClass('active');
+    });
+
+    // Cleanup function to remove event listeners when component unmounts
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      $(".sidebar ul li").off('click');
+      $('.open-btn').off('click');
+      $('.close-btn').off('click');
     };
-  }, []); // Run this effect only once on component mount
+  }, []);
 
-  return (
+  return  (
     <AuthProvider>
-      <div className="app-container">
-        <header className="header">
-          <Navbar />
-        </header>
-        <main className="container py-4">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<Login />} /> {/* Render login component */}
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/addstock" element={<AddStock />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/news" element={<BusinessNews />} />
-          </Routes>
-        </main>
-        <footer className="footer bg-dark text-white text-center py-3">
-          <div className="container">
-            &copy; 2024 Stock App
+      <div className="main-container d-flex">
+        <div className="sidebar" id="side_nav">
+          <div className="header-box px-2 pt-3 pb-4 d-flex justify-content-between">
+            <h1 className="fs-4"> <img src="./images/treasure_chest-removebg-preview.png" className="logo-tc-img" style={{ width: '15%', height: 'auto' }} /> <span className="text-white">TradeTrove</span></h1>
+            <button className="btn d-md-none d-block close-btn px-1 py-0 text-white"><i className="fal fa-stream"></i></button>
           </div>
-        </footer>
+
+          <ul className="list-unstyled px-2">
+            <li className={location.pathname === '/dashboard' ? 'active' : ''}><Link to="/dashboard" className="text-decoration-none px-3 py-2 d-block"><i className="fal fa-home"> </i> Dashboard</Link></li>
+            <li className={location.pathname === '/AddStock' ? 'active' : ''}><a href="#" className="text-decoration-none px-3 py-2 d-block"><i className="fal fa-list"></i> Add Stock</a></li>
+            <li className=""><a href="#" className="text-decoration-none px-3 py-2 d-block d-flex justify-content-between">
+              <span><i className="fal fa-comment"></i> Messages</span>
+              <span className="bg-dark rounded-pill text-white py-0 px-2">02</span>
+            </a></li>
+            <li className=""><a href="#" className="text-decoration-none px-3 py-2 d-block"><i className="fal fa-envelope-open-text"></i> Services</a></li>
+            <li className=""><a href="#" className="text-decoration-none px-3 py-2 d-block"><i className="fal fa-users"></i> Customers</a></li>
+          </ul>
+          <hr className="h-color mx-2" />
+
+          <ul className="list-unstyled px-2">
+            <li className=""><a href="#" className="text-decoration-none px-3 py-2 d-block"><i className="fal fa-bars"></i> Settings</a></li>
+            <li className=""><a href="#" className="text-decoration-none px-3 py-2 d-block"><i className="fal fa-bell"></i> Notifications</a></li>
+          </ul>
+        </div>
+
+        <div className="content">
+          <nav className="navbar navbar-expand-md navbar-light bg-light">
+            <div className="container-fluid">
+              <div className="d-flex justify-content-between d-md-none d-block">
+                <button className="btn px-1 py-0 open-btn me-2"><i className="fal fa-stream"></i></button>
+                <a className="navbar-brand fs-4" href="#"><span className="bg-dark rounded px-2 py-0 text-white">CL</span></a>
+              </div>
+              <button className="navbar-toggler p-0 border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <i className="fal fa-bars"></i>
+              </button>
+              <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul className="navbar-nav mb-2 mb-lg-0">
+                  <li className="nav-item">
+                    <a className="nav-link active" aria-current="page" href="#">Profile</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+
+          <div className="dashboard-content px-3 pt-4">
+            <h2 className="fs-5"> Dashboard</h2>
+            <Routes>
+
+            <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+          </div>
+        </div>
       </div>
+     
+
     </AuthProvider>
   );
 }
