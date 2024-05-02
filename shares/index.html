@@ -17,6 +17,12 @@
 <script type="text/javascript">
     let form = document.getElementById("form");
 
+    function formatDate(date) {
+        obj = new Date(Date.parse(date));
+        obj.setDate(obj.getDate() + 1);
+        return obj.toLocaleString('default', { month: 'long' }) + " " + obj.getDate() + ", " + obj.getFullYear();
+    }
+
 form.addEventListener("submit", (e) => {
     e.preventDefault();
     var arrPrices = [
@@ -121,28 +127,157 @@ form.addEventListener("submit", (e) => {
     "338.1000",
     "332.3300"
 ]
+    var arrDates = [
+    "2024-04-08",
+    "2024-04-05",
+    "2024-04-04",
+    "2024-04-03",
+    "2024-04-02",
+    "2024-04-01",
+    "2024-03-28",
+    "2024-03-27",
+    "2024-03-26",
+    "2024-03-25",
+    "2024-03-22",
+    "2024-03-21",
+    "2024-03-20",
+    "2024-03-19",
+    "2024-03-18",
+    "2024-03-15",
+    "2024-03-14",
+    "2024-03-13",
+    "2024-03-12",
+    "2024-03-11",
+    "2024-03-08",
+    "2024-03-07",
+    "2024-03-06",
+    "2024-03-05",
+    "2024-03-04",
+    "2024-03-01",
+    "2024-02-29",
+    "2024-02-28",
+    "2024-02-27",
+    "2024-02-26",
+    "2024-02-23",
+    "2024-02-22",
+    "2024-02-21",
+    "2024-02-20",
+    "2024-02-16",
+    "2024-02-15",
+    "2024-02-14",
+    "2024-02-13",
+    "2024-02-12",
+    "2024-02-09",
+    "2024-02-08",
+    "2024-02-07",
+    "2024-02-06",
+    "2024-02-05",
+    "2024-02-02",
+    "2024-02-01",
+    "2024-01-31",
+    "2024-01-30",
+    "2024-01-29",
+    "2024-01-26",
+    "2024-01-25",
+    "2024-01-24",
+    "2024-01-23",
+    "2024-01-22",
+    "2024-01-19",
+    "2024-01-18",
+    "2024-01-17",
+    "2024-01-16",
+    "2024-01-12",
+    "2024-01-11",
+    "2024-01-10",
+    "2024-01-09",
+    "2024-01-08",
+    "2024-01-05",
+    "2024-01-04",
+    "2024-01-03",
+    "2024-01-02",
+    "2023-12-29",
+    "2023-12-28",
+    "2023-12-27",
+    "2023-12-26",
+    "2023-12-22",
+    "2023-12-21",
+    "2023-12-20",
+    "2023-12-19",
+    "2023-12-18",
+    "2023-12-15",
+    "2023-12-14",
+    "2023-12-13",
+    "2023-12-12",
+    "2023-12-11",
+    "2023-12-08",
+    "2023-12-07",
+    "2023-12-06",
+    "2023-12-05",
+    "2023-12-04",
+    "2023-12-01",
+    "2023-11-30",
+    "2023-11-29",
+    "2023-11-28",
+    "2023-11-27",
+    "2023-11-24",
+    "2023-11-22",
+    "2023-11-21",
+    "2023-11-20",
+    "2023-11-17",
+    "2023-11-16",
+    "2023-11-15",
+    "2023-11-14",
+    "2023-11-13"
+]
 
+    floatPrices = arrPrices.map(Number).sort(function(a, b){return a - b});
+    unsorted = arrPrices.map(Number)
     let buyPrice = document.getElementById("buyPrice");
     let shares = document.getElementById("shares");
 
     document.write("Bought at: $");
-    document.writeln((parseFloat(buyPrice.value) * parseFloat(shares.value)).toString());
+    document.writeln((parseFloat(buyPrice.value) * parseFloat(shares.value)).toFixed(2).toString());
     document.write("<br>");
     document.write("Current Value: $");
-    document.writeln((parseFloat(arrPrices[0]) * parseFloat(shares.value)).toString());
+    document.writeln((parseFloat(arrPrices[0]) * parseFloat(shares.value)).toFixed(2).toString());
     document.write("<br>");
-    document.write("Performance: ");
+    document.write("All-Time Performance: ");
 
     if (parseFloat(buyPrice.value) > parseFloat(arrPrices[0])) {
-        document.write("Up ");
+        document.write("Down ");
         document.write(((parseFloat(buyPrice.value)  - parseFloat(arrPrices[0])) / parseFloat(buyPrice.value) * 100).toFixed(2).toString());
         document.write("%");
     }
     else {
-        document.write("Down ");
+        document.write("Up ");
         document.write(((parseFloat(arrPrices[0]) - parseFloat(buyPrice.value)) / parseFloat(buyPrice.value) * 100).toFixed(2).toString());
         document.write("%");
     }
+
+    document.write("<br>");
+    document.write("All-Time Low: $");
+    document.writeln((floatPrices[0] * parseFloat(shares.value)).toFixed(2).toString());
+    document.write(" (");
+    document.write(formatDate(arrDates[unsorted.indexOf(floatPrices[0])]));
+    document.write(")");
+    document.write("<br>");
+    document.write("All-Time High: $");
+    document.writeln((floatPrices[floatPrices.length - 1] * parseFloat(shares.value)).toFixed(2).toString());
+    document.write(" (");
+    document.write(formatDate(arrDates[unsorted.indexOf(floatPrices[floatPrices.length - 1])]));
+    document.write(")");
+    document.write("<br>");
+    document.write("Past Day: ");
+    
+    if (parseFloat(arrPrices[0]) > parseFloat(arrPrices[1])) {
+        document.write("Up ");
+        document.write(((parseFloat(arrPrices[0])  - parseFloat(arrPrices[1])) / parseFloat(arrPrices[1]) * 100).toFixed(2).toString());
+    }
+    else {
+        document.write("Down ");
+        document.write(((parseFloat(arrPrices[1])  - parseFloat(arrPrices[0])) / parseFloat(arrPrices[arrPrices.length - 2]) * 100).toFixed(2).toString());
+    }
+    document.write("%");
 });
 </script>
 
