@@ -68,7 +68,9 @@ const AddStock = () => {
   };
 
   // Function to render stock graphs based on fetched data
-  const renderStockGraphs = () => {
+  // Function to render stock graphs based on fetched data
+const renderStockGraphs = () => {
+  try {
     // Return null if no stock data available
     if (!stockData || stockData.length === 0) return null;
 
@@ -88,7 +90,16 @@ const AddStock = () => {
         </ResponsiveContainer>
       </div>
     ));
-  };
+  } catch (error) {
+    // Handle chart generation error
+    return (
+      <div className="error-message">
+        Error: Out Of API Calls
+      </div>
+    );
+  }
+};
+
 
   // Function to format stock data for rendering
   const formatStockData = (stock) => {
