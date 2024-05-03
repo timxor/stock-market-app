@@ -11,7 +11,7 @@ import { // Import components from Chat UI Kit React
 } from '@chatscope/chat-ui-kit-react';
 
 // Define API key for OpenAI ChatGPT API
-//const API_KEY = "";
+const API_KEY = "";
 
 // Define Advice functional component
 const Advice = () => {
