@@ -5,7 +5,7 @@ import './AddStock.css'; // Import custom CSS for styling
 const HomePage = () => {
   return (
     <div>
-      <h1>Welcome to the Stock Market App</h1>
+      <h1>Welcome to TradeTrove!</h1>
       <div>
         {/* Button to navigate to the login page */}
         <Link to="/login">

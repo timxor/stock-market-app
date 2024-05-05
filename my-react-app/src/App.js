@@ -20,7 +20,8 @@ function App() {
       <div className="app-container">
         <header className="header">
           <div className="container d-flex justify-content-between align-items-center">
-            <h1 className="logo text-white">Stock App</h1>
+          <img src="treasure_chect-removebg-preview.jpg" className="logo-image" />
+            <h1 className="logo text-white">TradeTrove</h1>
             <Navbar />
             <div>
               <SignOutButton />
