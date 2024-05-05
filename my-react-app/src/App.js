@@ -20,8 +20,10 @@ function App() {
       <div className="app-container">
         <header className="header">
           <div className="container d-flex justify-content-between align-items-center">
-          <img src="treasure_chest.png" className="logo-image" />
-            <h1 className="logo text-white">TradeTrove</h1>
+            <h1 className="logo text-white">
+              <img src="my-react-app/treasure_chest.png" alt=""></img>
+              TradeTrove
+            </h1>
             <Navbar />
             <div>
               <SignOutButton />
