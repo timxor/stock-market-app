@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './AddStock.css'; // Import custom CSS for styling
+import './HomePage.css'; // Import custom CSS for styling
 
 const HomePage = () => {
   return (
-    <div>
+    <div className ="home-page-container">
       <h1>Welcome to TradeTrove!</h1>
       <div>
         {/* Button to navigate to the login page */}
