@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NewsDataService from '../services/news'; 
+import './NewsPage.css';
 
 const BusinessNews = () => {
   const [symbol, setSymbol] = useState('');
@@ -32,7 +33,7 @@ const BusinessNews = () => {
   }, [stockData]);
 
   return (
-    <div>
+    <div className="news-page-container" >
       <label>
         Enter Stock Symbol:
         <input
@@ -48,9 +49,18 @@ const BusinessNews = () => {
           <h2>{symbol}</h2>
           <ul>
             {stockData.feed.map((item, index) => (
-              <li key={index}>
-                <a href={item.url}>{item.url}</a>
-              </li>
+                <a href={item.url} key={index} className="card-link">
+                <div className="card">
+                  <img className="card-img-top" src={item.imageSrc} alt={item.title} />
+                  <div className="card-body">
+                    <h5 className="card-title">{item.title}</h5>
+                    <p className="card-text">{item.description}</p>
+                  </div>
+                  <div className="card-footer">
+                    <small className="text-muted">{item.lastUpdated}</small>
+                  </div>
+                </div>
+              </a>
             ))}
           </ul>
         </div>
