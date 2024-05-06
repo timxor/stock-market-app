@@ -40,9 +40,9 @@ const BusinessNews = () => {
       <button onClick={handleSearch}>Enter</button>
 
       {apiError ? (
-        <div>{apiError}</div> // Display the error message if API call fails
+        <div className="error-message">{apiError}</div> // Display the error message if API call fails
       ) : (
-        stockData && (
+        stockData && stockData.feed ? (
           <div>
             <h2>{symbol.toUpperCase()}</h2>
             <p style={{ fontSize: '20px' }}>{new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
@@ -68,6 +68,8 @@ const BusinessNews = () => {
               ))}
             </div>
           </div>
+        ) : (
+          <p className="no-data-message">No news data available for {symbol.toUpperCase()}</p> // Display message if no news data is available
         )
       )}
     </div>
