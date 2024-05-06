@@ -51,25 +51,27 @@ const BusinessNews = () => {
 
       {stockData && (
         <div>
-          <h2>{symbol}</h2>
-          <ul> 
+          <h2>{symbol.toUpperCase()}</h2>
+          <p style={{ fontSize: '20px' }}>{new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          <div className="card-deck">
+            <ul> 
             {stockData.feed.map((item, index) => (
-                <a href={item.url} key={index} className="card-link">
-                <div className="card">
-                  <Link to={item.url}>
-                    <img className="card-img-top" src={item.imageSrc} alt={item.title} />
-                  </Link>
-                  <div className="card-body">
-                    <h5 className="card-title">{item.title}</h5>
-                    <p className="card-text">{item.description}</p>
-                  </div>
-                  <div className="card-footer">
-                    <small className="text-muted">{item.lastUpdated}</small>
-                  </div>
+              <div key={index} className="card" style={{ width: '18rem' }}>
+                <a href={item.url}>
+                  <img className="card-img-top" src={item.banner_image} alt="Banner" />
+                </a>
+                <div className="card-body">
+                  <p className="card-source">{item.source}</p>
+                  <h5 className="card-title">{item.title}</h5>
+                  <p className="card-text">{item.summary}</p>
+                  <a href={item.url} className="btn btn-primary">Read More</a>
+                  <hr /> {/* Horizontal line */}
+                    <p className="author-name">Author: {item.authors[0]}</p>
                 </div>
-              </a>
+              </div>
             ))}
-          </ul>
+            </ul>
+          </div>
         </div>
       )}
     </div>
