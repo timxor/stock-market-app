@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'; // Import React and necessary hooks
 import StockDataService from '../services/stock-services'; // Import custom StockDataService module
 import { useAuth } from './AuthContext'; // Import useAuth hook from AuthContext module
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'; // Import necessary components from recharts library
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'; // Import necessary components from recharts library
 import './AddStock.css'; // Import custom CSS for styling
 
 // Define Dashboard functional component
@@ -34,17 +34,61 @@ const Dashboard = () => {
     }
   };
 
+  // Function to render stock graphs based on fetched data
+  const renderStockGraphs = () => {
+    try {
+      // Return null if no stocks available
+      if (!stocks || stocks.length === 0) return null;
+
+      // Calculate the maximum high value among all stocks
+      const maxHigh = Math.max(...stocks.flatMap(stock => stock.highs));
+
+      // Render graph for each stock in stocks array
+      return stocks.map((stock, index) => (
+        <div key={index} className="stock-graph">
+          <h3>{stock.company}</h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart
+              data={formatStockData(stock)}
+              margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" tickFormatter={(tick) => new Date(tick).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })} />
+              <YAxis domain={[0, maxHigh]} />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="high" stroke="#8884d8" dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      ));
+    } catch (error) {
+      // Handle chart generation error
+      return (
+        <div className="error-message">
+          Error: Out Of API Calls
+        </div>
+      );
+    }
+  };
+
+  // Function to format stock data for rendering
+  const formatStockData = (stock) => {
+    try {
+      return stock.dates.map((date, index) => ({ 
+        date: new Date(date), // Convert date string to Date object
+        high: stock.highs[index]
+      })).sort((a, b) => a.date - b.date);
+    } catch (error) {
+      // Handle errors by setting error state variable
+      setError("Error parsing stock data: " + error.message);
+      return [];
+    }
+  };
+
   // Function to handle button click and set selected stock type
   const handleButtonClick = (type) => {
     setSelectedStockType(type); // Set selected stock type
-  };
-
-  // Function to transform stock data for rendering
-  const transformStockData = (stock) => {
-    return stock.dates.map((date, index) => ({ 
-      date: new Date(date), // Convert date string to Date object
-      high: stock.highs[index]
-    })).sort((a, b) => a.date - b.date);
   };
 
   // Render JSX for Dashboard component
@@ -59,36 +103,8 @@ const Dashboard = () => {
         <button onClick={() => handleButtonClick('month')} className={`button ${selectedStockType === 'month' ? 'active' : ''}`}>Month</button>
       </div>
       <div className="stocks-chart">
-        {stocks.length > 0 ? (
-          // Render line chart for each stock
-          stocks.map((stock, index) => (
-            <div key={index} className="stock-graph">
-              <h3>{stock.company}</h3>
-              <LineChart
-                width={800}
-                height={400}
-                data={transformStockData(stock)}
-                margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                {/* Render line with random color */}
-                <Line
-                  type="monotone"
-                  dataKey="high"
-                  stroke={`#${Math.floor(Math.random()*16777215).toString(16)}`}
-                  name={stock.company}
-                  dot={false}
-                />
-              </LineChart>
-            </div>
-          ))
-        ) : (
-          <p>No stocks available.</p> // Render if no stocks available
-        )}
+        {/* Render stock graphs */}
+        {renderStockGraphs()}
       </div>
       {/* Render error message if error exists */}
       {error && <div style={{ color: 'red' }}>{error}</div>}
