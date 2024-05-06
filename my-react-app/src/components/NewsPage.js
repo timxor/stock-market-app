@@ -40,6 +40,7 @@ const BusinessNews = () => {
           type="text"
           value={symbol}
           onChange={(e) => setSymbol(e.target.value)}
+          className="search-bar"
         />
       </label>
       <button onClick={handleSearch}>Enter</button>
