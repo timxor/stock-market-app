@@ -45,7 +45,7 @@ function App() {
         </main>
         <footer className="footer bg-dark text-white text-center py-3">
           <div className="container">
-            &copy; 2024 Stock App
+            &copy; 2024 TradeTrove. All Rights Reserved.
           </div>
         </footer>
       </div>
