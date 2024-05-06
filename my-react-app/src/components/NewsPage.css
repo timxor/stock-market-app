@@ -23,3 +23,10 @@ button:hover {
 button.active {
   background-color: orange; 
 }
+
+.card-deck {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three columns */
+  gap: 20px; /* Gap between cards */
+}
+
