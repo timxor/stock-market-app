@@ -11,7 +11,7 @@ const HomePage = () => {
     TradeTrove equips you with the knowledge and tools needed to navigate the complexities of the stock market with confidence. With 
      TradeTrove, you can stay ahead of market trends, discover new investment opportunities, and take control of your financial future.
       </p>
-    <h2>Get Started Today!</h2>
+    <h2>Get Started Today...</h2>
       <div>
         {/* Button to navigate to the login page */}
         <Link to="/login">
