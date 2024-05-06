@@ -174,12 +174,12 @@ const renderStockGraphs = () => {
   return (
     <div className="add-stock-container">
       <label>
-        Enter Stock Symbol:
         <input
           type="text"
           value={symbol}
           onChange={(e) => setSymbol(e.target.value)}
           className="search-bar"
+          placeholder="Enter stock symbol..."
         />
       </label>
       <div className="button-container">
