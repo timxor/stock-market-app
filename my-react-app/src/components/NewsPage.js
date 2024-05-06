@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import NewsDataService from '../services/news'; 
 import './NewsPage.css';
+import { Link } from 'react-router-dom';
 
 const BusinessNews = () => {
   const [symbol, setSymbol] = useState('');
@@ -27,6 +28,9 @@ const BusinessNews = () => {
     if (stockData && stockData.feed) {
       stockData.feed.forEach(item => {
         const url = item.url;
+        const title = item.title;
+        const description = item.description;
+        console.log(title); // Output each title
         console.log(url); // Output each URL
       });
     }
@@ -48,11 +52,13 @@ const BusinessNews = () => {
       {stockData && (
         <div>
           <h2>{symbol}</h2>
-          <ul>
+          <ul> 
             {stockData.feed.map((item, index) => (
                 <a href={item.url} key={index} className="card-link">
                 <div className="card">
-                  <img className="card-img-top" src={item.imageSrc} alt={item.title} />
+                  <Link to={item.url}>
+                    <img className="card-img-top" src={item.imageSrc} alt={item.title} />
+                  </Link>
                   <div className="card-body">
                     <h5 className="card-title">{item.title}</h5>
                     <p className="card-text">{item.description}</p>
