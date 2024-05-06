@@ -93,7 +93,7 @@ const Advice = () => {
   // Render JSX for Advice component
   return (
     <div className="App">
-      <div style={{ position:"relative", height: "600px", width: "75%"  }}>
+      <div style={{ position:"fixed", bottom:"auto", height: "65vh" , width: "75%"  }}>
         <MainContainer>
           <ChatContainer>       
             <MessageList 

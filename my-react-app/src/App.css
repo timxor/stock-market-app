@@ -85,7 +85,8 @@ body {
   width: 100%; 
   background-color: #343a40;
   color: #fff;
-  position: absolute; bottom: 0
+  position: fixed; 
+  bottom: 0;
 }
 
 /* AddStock.css */
