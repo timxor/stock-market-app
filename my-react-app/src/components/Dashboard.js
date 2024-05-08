@@ -30,19 +30,21 @@ const Dashboard = () => {
     }
   };
 
-  // Function to render stock graphs based on fetched data
+
 // Function to render stock graphs based on fetched data
 const renderStockGraphs = () => {
   try {
-    // Return null if no stocks available
     if (!stocks || stocks.length === 0) return null;
 
-    // Render graph and value for each stock in stocks array
     return stocks.map((stock, index) => {
-      // Calculate the maximum high value for this stock
-      const maxHigh = Math.max(...stock.highs);
-      // Calculate the total value of the shares
-      const totalValue = stock.highs[stock.highs.length - 1] * stock.sharesOwned; // Assuming sharesOwned is a property of stock object
+      const formattedStockData = formatStockData(stock);
+
+      if (formattedStockData.length === 0) {
+        return null; // Skip rendering if there's no formatted stock data
+      }
+
+      const lastHigh = formattedStockData[formattedStockData.length - 1].high;
+      const totalValue = lastHigh * stock.sharesOwned;
 
       return (
         <div key={index} className="stock-container">
@@ -50,12 +52,12 @@ const renderStockGraphs = () => {
             <h3>{stock.company}</h3>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart
-                data={formatStockData(stock)}
+                data={formattedStockData}
                 margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" tickFormatter={(tick) => new Date(tick).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })} />
-                <YAxis domain={[0, maxHigh]} />
+                <YAxis domain={[0, 'auto']} />
                 <Tooltip />
                 <Legend />
                 <Line type="monotone" dataKey="high" stroke="#8884d8" dot={false} />
@@ -76,14 +78,14 @@ const renderStockGraphs = () => {
       );
     });
   } catch (error) {
-    // Handle chart generation error
     return (
       <div className="error-message">
-        Error: Out Of API Calls
+        Error: {error.message}
       </div>
     );
   }
 };
+
 
 // Function to handle change in number of shares owned
 const handleSharesChange = (index, value) => {
