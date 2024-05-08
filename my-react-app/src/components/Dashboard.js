@@ -31,32 +31,47 @@ const Dashboard = () => {
   };
 
   // Function to render stock graphs based on fetched data
+// Function to render stock graphs based on fetched data
 const renderStockGraphs = () => {
   try {
     // Return null if no stocks available
     if (!stocks || stocks.length === 0) return null;
 
-    // Render graph for each stock in stocks array
+    // Render graph and value for each stock in stocks array
     return stocks.map((stock, index) => {
       // Calculate the maximum high value for this stock
       const maxHigh = Math.max(...stock.highs);
+      // Calculate the total value of the shares
+      const totalValue = stock.highs[stock.highs.length - 1] * stock.sharesOwned; // Assuming sharesOwned is a property of stock object
 
       return (
-        <div key={index} className="stock-graph">
-          <h3>{stock.company}</h3>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart
-              data={formatStockData(stock)}
-              margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" tickFormatter={(tick) => new Date(tick).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })} />
-              <YAxis domain={[0, maxHigh]} />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="high" stroke="#8884d8" dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
+        <div key={index} className="stock-container">
+          <div className="stock-graph">
+            <h3>{stock.company}</h3>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart
+                data={formatStockData(stock)}
+                margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" tickFormatter={(tick) => new Date(tick).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })} />
+                <YAxis domain={[0, maxHigh]} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="high" stroke="#8884d8" dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="stock-info">
+            <label htmlFor={`shares-input-${index}`}>Enter Number of Shares:</label>
+            <input 
+              type="number"
+              id={`shares-input-${index}`}
+              value={stock.sharesOwned}
+              onChange={(e) => handleSharesChange(index, e.target.value)}
+            />
+            <p>Total Value: ${totalValue.toFixed(2)}</p>
+          </div>
         </div>
       );
     });
@@ -68,6 +83,13 @@ const renderStockGraphs = () => {
       </div>
     );
   }
+};
+
+// Function to handle change in number of shares owned
+const handleSharesChange = (index, value) => {
+  const updatedStocks = [...stocks];
+  updatedStocks[index].sharesOwned = value;
+  setStocks(updatedStocks);
 };
 
 
