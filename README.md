@@ -23,7 +23,7 @@ git clone https://github.com/your-username/stock-portfolio-app.git
 2. Navigate to the project directory:
 
 ```bash
-cd stock-portfolio-app
+cd my-react-app
 ```
 
 3. Install dependencies:
