@@ -1,6 +1,3 @@
-Sure, here's a simple README template that includes instructions on how to run the app:
-
----
 
 # Stock Portfolio Management App
 
@@ -58,7 +55,3 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-Feel free to customize the README with additional information about your project as needed.
