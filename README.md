@@ -31,7 +31,7 @@ cd my-react-app
 ```bash
 npm install
 ```
-
+4. Inorder for the Advice portion to work you will need you own OpenAI Key and paste it on to line 14 of Advice.js
 ## Usage
 
 1. Start the development server:
