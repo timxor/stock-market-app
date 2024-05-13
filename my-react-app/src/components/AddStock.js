@@ -67,8 +67,7 @@ const AddStock = () => {
     }
   };
 
-  // Function to render stock graphs based on fetched data
-  // Function to render stock graphs based on fetched data
+// Function to render stock graphs based on fetched data
 const renderStockGraphs = () => {
   try {
     // Return null if no stock data available
